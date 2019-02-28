@@ -3,6 +3,9 @@ package com.kadima.demo.aitable.ui.organ;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,15 +21,19 @@ import org.jdesktop.swingx.JXTreeTable;
 
 @SuppressWarnings("serial")
 public class XTreeTableCellRenderer extends DefaultTableCellRenderer {
+	private JTree tree;
+	private JXTreeTable treetable;
+	
+	XTreeTableCellRenderer(JXTreeTable treetable){
+		this.tree = (JTree) treetable.getCellRenderer(0, 0);
+		this.treetable = treetable;
+	}
 
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 			int row, int column) {	
 		Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		if(table instanceof JXTreeTable) {
-			JXTreeTable xtreetable = (JXTreeTable) table;
-			JTree tree = (JTree) xtreetable.getCellRenderer(0, 0);
-			
 			TreePath path = tree.getPathForRow(row);
 			if(path!=null) {
 				if(path.getPathCount()==2) { //如果是一级节点
@@ -45,31 +52,24 @@ public class XTreeTableCellRenderer extends DefaultTableCellRenderer {
 					int indexofparent = tree.getModel().getIndexOfChild(parentpath.getLastPathComponent(),
 							path.getLastPathComponent());
 					Color matteColot = XTreeTableManager.LEFT_BORDER_BACKGROUND;
-					if(column==1) {
-						if(indexofparent==0) {
-							
-							((JLabel)comp).setBorder(new MatteBorder(4, 4, 0, 0, matteColot));
-						}else if(indexofparent==childcount-1) {
-							((JLabel)comp).setBorder(new MatteBorder(0, 4, 4, 0, matteColot));
-						}else {
-							((JLabel)comp).setBorder(new MatteBorder(0, 4, 0, 0, matteColot));
-						}
-					}else if(column==table.getColumnCount()-1){
-						if(indexofparent==0) {
-							((JLabel)comp).setBorder(new MatteBorder(4, 0, 0, 4, matteColot));
-						}else if(indexofparent==childcount-1) {
-							((JLabel)comp).setBorder(new MatteBorder(0, 0, 4, 4, matteColot));
-						}else {
-							((JLabel)comp).setBorder(new MatteBorder(0, 0, 0, 4, matteColot));
-						}
-					}else {
-						if(indexofparent==0) {
-							((JLabel)comp).setBorder(new MatteBorder(4, 0, 0, 0, matteColot));
-						}else if(indexofparent==childcount-1) {
-							((JLabel)comp).setBorder(new MatteBorder(0, 0, 4, 0, matteColot));
-						}
+					int top=0,left=0,bottom=0,right=0;
+					int width = 4;
+					if(indexofparent==0) {
+						top = width;
 					}
-					
+					if(indexofparent==childcount-1) {
+						bottom = width;
+					}
+					if(column==1) {
+						left = width;
+					}
+					if(column==table.getColumnCount()-1) {
+						right = width;
+					}
+					((JLabel)comp).setBorder(new MatteBorder(top, left, bottom, right, matteColot));
+					if(((Integer)value)%2==0) {
+						
+					}
 				}
 			}
 

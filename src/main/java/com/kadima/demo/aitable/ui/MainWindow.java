@@ -4,17 +4,23 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTree;
+import javax.swing.JViewport;
 import javax.swing.UIManager;
 
+import org.jdesktop.swingx.JXColorSelectionButton;
 import org.jdesktop.swingx.JXTreeTable;
 
-import com.kadima.demo.aitable.ui.organ.JXColorSelectionButton;
+import com.kadima.demo.aitable.ui.organ.JXFrozenTreeTable;
 import com.kadima.demo.aitable.ui.organ.XTreeTableManager;
 
 public class MainWindow {
@@ -31,7 +37,7 @@ public class MainWindow {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 					MainWindow window = new MainWindow();
-					window.frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // 设置窗口最大化
+//					window.frame.setExtendedState(JFrame.MAXIMIZED_BOTH); // 设置窗口最大化
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -61,14 +67,24 @@ public class MainWindow {
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(new BorderLayout(0, 0));
 
-		JXTreeTable treetable = new JXTreeTable(new XTreeTableModel()); // JXTreeTable构造方法
+		JXFrozenTreeTable treetable = new JXFrozenTreeTable(new XTreeTableModel()); // JXTreeTable构造方法
 		new XTreeTableManager(treetable);
 		treetable.getColumnModel().getColumn(0).setPreferredWidth(150); // 设置第一列宽度
 		treetable.getTableHeader().setResizingAllowed(false);
 		treetable.setShowGrid(true);
 		treetable.getTableHeader().setReorderingAllowed(false);//设置表头不能拖动
+		treetable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
 		JScrollPane scrollpane = new JScrollPane(treetable);
+//		scrollpane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+//			
+//			public void adjustmentValueChanged(AdjustmentEvent e) {
+//				
+//				
+//			}
+//		});
+		//重点，滑动后需要重新绘制所有的内容
+		(scrollpane.getViewport()).setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		scrollpane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		panel.add(scrollpane, BorderLayout.CENTER);
 
@@ -82,7 +98,8 @@ public class MainWindow {
 		frame.getContentPane().add(panel_1, BorderLayout.EAST);
 		panel_1.setLayout(null);
 		
-		JXColorSelectionButton colorSelectionButton = new JXColorSelectionButton(XTreeTableManager.GROUP_ROW_BACKGROUND,"组行背景色");
+		JXColorSelectionButton colorSelectionButton = new JXColorSelectionButton(XTreeTableManager.GROUP_ROW_BACKGROUND);
+		colorSelectionButton.setText("组行背景色");
 		colorSelectionButton.addPropertyChangeListener("background",new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				XTreeTableManager.GROUP_ROW_BACKGROUND = ((JXColorSelectionButton)evt.getSource()).getBackground();
@@ -93,7 +110,8 @@ public class MainWindow {
 		colorSelectionButton.setBounds(10, 10, 168, 23);
 		panel_1.add(colorSelectionButton);
 		
-		JXColorSelectionButton colorSelectionButton_2 = new JXColorSelectionButton(XTreeTableManager.GROUP_HEADER_BACKGROUND,"组头背景色");
+		JXColorSelectionButton colorSelectionButton_2 = new JXColorSelectionButton(XTreeTableManager.GROUP_HEADER_BACKGROUND);
+		colorSelectionButton_2.setText("组头背景色");
 		colorSelectionButton_2.addPropertyChangeListener("background",new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				XTreeTableManager.GROUP_HEADER_BACKGROUND = ((JXColorSelectionButton)evt.getSource()).getBackground();
@@ -104,7 +122,8 @@ public class MainWindow {
 		colorSelectionButton_2.setBounds(10, 39, 168, 23);
 		panel_1.add(colorSelectionButton_2);
 		
-		JXColorSelectionButton colorSelectionButton_3 = new JXColorSelectionButton(XTreeTableManager.LEFT_BORDER_BACKGROUND,"成员区域边框背景色");
+		JXColorSelectionButton colorSelectionButton_3 = new JXColorSelectionButton(XTreeTableManager.LEFT_BORDER_BACKGROUND);
+		colorSelectionButton_3.setText("成员区域边框背景色");
 		colorSelectionButton_3.addPropertyChangeListener("background",new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				XTreeTableManager.LEFT_BORDER_BACKGROUND = ((JXColorSelectionButton)evt.getSource()).getBackground();
@@ -115,7 +134,8 @@ public class MainWindow {
 		colorSelectionButton_3.setBounds(10, 68, 168, 23);
 		panel_1.add(colorSelectionButton_3);
 		
-		JXColorSelectionButton colorSelectionButton_4 = new JXColorSelectionButton(XTreeTableManager.LEFT_HEADER_BACKGROUND,"成员头背景色");
+		JXColorSelectionButton colorSelectionButton_4 = new JXColorSelectionButton(XTreeTableManager.LEFT_HEADER_BACKGROUND);
+		colorSelectionButton_4.setText("成员头背景色");
 		colorSelectionButton_4.addPropertyChangeListener("background",new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				XTreeTableManager.LEFT_HEADER_BACKGROUND = ((JXColorSelectionButton)evt.getSource()).getBackground();
@@ -127,7 +147,8 @@ public class MainWindow {
 		colorSelectionButton_4.setBounds(10, 97, 168, 23);
 		panel_1.add(colorSelectionButton_4);
 		
-		JXColorSelectionButton colorSelectionButton_5 = new JXColorSelectionButton(XTreeTableManager.CELL_SELECTED_BACKGROUND,"单元格选择背景色");
+		JXColorSelectionButton colorSelectionButton_5 = new JXColorSelectionButton(XTreeTableManager.CELL_SELECTED_BACKGROUND);
+		colorSelectionButton_5.setText("单元格选择背景色");
 		colorSelectionButton_5.addPropertyChangeListener("background",new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent evt) {
 				XTreeTableManager.CELL_SELECTED_BACKGROUND = ((JXColorSelectionButton)evt.getSource()).getBackground();

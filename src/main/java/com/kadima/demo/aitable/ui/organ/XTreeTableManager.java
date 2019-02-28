@@ -1,6 +1,7 @@
 package com.kadima.demo.aitable.ui.organ;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -53,7 +54,7 @@ public class XTreeTableManager extends MouseAdapter  {
 		tree.setRootVisible(false); //隐藏根节点
 		tree.setBackground(new Color(128, 128, 128));
 		//表格整体样式绘制
-		this.treetable.setDefaultRenderer(Object.class, new XTreeTableCellRenderer());
+		this.treetable.setDefaultRenderer(Object.class, new XTreeTableCellRenderer(treetable));
 		this.treetable.setSelectionBackground(CELL_SELECTED_BACKGROUND);
 		//重绘树节点
 		tree.setCellRenderer(new DefaultTreeRenderer(new SingleTreeCellProvider()));
@@ -71,14 +72,27 @@ public class XTreeTableManager extends MouseAdapter  {
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-		int col = treetable.columnAtPoint(e.getPoint());
+		Point location = treetable.getLocation();
+		TreePath path = null;
+		Point mousepoint = e.getPoint();
+		if(location.x<0) {
+			path = tree.getPathForLocation(e.getX()+location.x, e.getY());
+			mousepoint.x = e.getX()+location.x;
+		}else {
+			path = tree.getPathForLocation(e.getX(), e.getY());
+		}
+		int col = treetable.columnAtPoint(mousepoint);
+		int row = treetable.rowAtPoint(mousepoint);
 		if(path==null) {
 			return ;
 		}
 		// 获取当前选择的第一个结点中的最后一个路径组件
 //        DefaultMutableTreeTableNode dmt = (DefaultMutableTreeTableNode) path.getLastPathComponent();
-        if(path.getPathCount()==2 && col==0) {
+		if(col==0) {
+			treetable.setColumnSelectionInterval(col, col);
+			treetable.setRowSelectionInterval(row, row);
+		}
+		if(path.getPathCount()==2 && col==0) {
         	if(tree.isExpanded(path)) {
         		tree.collapsePath(path);
         	}else {
